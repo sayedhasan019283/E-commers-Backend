@@ -1,7 +1,7 @@
 import { Model, Types } from 'mongoose';
-import { Role } from '../../middlewares/roles';
+import { Role } from '../../../middlewares/roles';
 import { TUserStatus } from './user.constant';
-import { PaginateOptions, PaginateResult } from '../../../types/paginate';
+import { PaginateOptions, PaginateResult } from '../../../../types/paginate';
 
 export type TUser = {
   _id: Types.ObjectId;
@@ -16,9 +16,9 @@ export type TUser = {
   password: string;
   ConfirmPassword: string;
   status: TUserStatus;
-  city : String;
-  postCode : string;
-  country : string;
+  city: String;
+  postCode: string;
+  country: string;
   role: Role;
   isHumanTrue: boolean;
   isDeleted: boolean;
@@ -29,8 +29,8 @@ export type TUser = {
   oneTimeCode?: string | null;
   oneTimeCodeExpire?: Date | null;
   subEndDate?: Date | null;
-  otpCountDown?: number | null; 
-  serviceCount? : number;
+  otpCountDown?: number | null;
+  serviceCount?: number;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -38,7 +38,7 @@ export type TUser = {
 export interface UserModal extends Model<TUser> {
   paginate: (
     filter: object,
-    options: PaginateOptions
+    options: PaginateOptions,
   ) => Promise<PaginateResult<TUser>>;
   isExistUserById(id: string): Promise<Partial<TUser> | null>;
   isExistUserByEmail(email: string): Promise<Partial<TUser> | null>;

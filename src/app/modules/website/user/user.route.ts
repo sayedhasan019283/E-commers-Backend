@@ -1,10 +1,10 @@
 import express from 'express';
 import { UserController } from './user.controller';
-import auth from '../../middlewares/auth';
-import validateRequest from '../../middlewares/validateRequest';
+import auth from '../../../middlewares/auth';
+import validateRequest from '../../../middlewares/validateRequest';
 import { UserValidation } from './user.validation';
-import fileUploadHandler from '../../middlewares/fileUploadHandler';
-import convertHeicToPngMiddleware from '../../middlewares/convertHeicToPngMiddleware';
+import fileUploadHandler from '../../../middlewares/fileUploadHandler';
+import convertHeicToPngMiddleware from '../../../middlewares/convertHeicToPngMiddleware';
 
 const UPLOADS_FOLDER = 'uploads/users';
 const upload = fileUploadHandler(UPLOADS_FOLDER);
@@ -20,14 +20,14 @@ router
     auth('admin'),
     upload.single('profileImage'),
     convertHeicToPngMiddleware(UPLOADS_FOLDER),
-    UserController.createUser
+    UserController.createUser,
   );
 router.post(
   '/profile-image',
   auth('common'),
   upload.single('profileImage'),
   convertHeicToPngMiddleware(UPLOADS_FOLDER),
-  UserController.updateUserImage
+  UserController.updateUserImage,
 );
 // router.post(
 //   '/fill-up-user-data',
@@ -48,13 +48,13 @@ router.patch(
   validateRequest(UserValidation.updateUserValidationSchema),
   upload.single('profileImage'),
   convertHeicToPngMiddleware(UPLOADS_FOLDER),
-  UserController.updateMyProfile
+  UserController.updateMyProfile,
 );
 
 router.get(
   '/get-one-users/:id',
   auth('admin'),
-  UserController.getSingleUserFromDB
+  UserController.getSingleUserFromDB,
 );
 
 //main routes
@@ -64,8 +64,8 @@ router
   .delete(auth('common'), UserController.deleteMyProfile);
 router.get(
   '/single-user/:id',
-  auth("common"),
-  UserController.getSingleUserById
-)
+  auth('common'),
+  UserController.getSingleUserById,
+);
 
 export const UserRoutes = router;

@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
 import { Schema, model } from 'mongoose';
-import config from '../../../config';
+import config from '../../../../config';
 import { TUser, UserModal } from './user.interface';
-import { roles } from '../../middlewares/roles';
-import paginate from '../../../helpers/paginate';
+import { roles } from '../../../middlewares/roles';
+import paginate from '../../../../helpers/paginate';
 
 const userSchema = new Schema<TUser, UserModal>(
   {
@@ -22,19 +22,19 @@ const userSchema = new Schema<TUser, UserModal>(
     },
     profileImage: {
       type: String,
-      default : '',
+      default: '',
     },
     city: {
       type: String,
-      default : '',
+      default: '',
     },
     postCode: {
       type: String,
-      default : '',
+      default: '',
     },
-    country : {
+    country: {
       type: String,
-      default : '',
+      default: '',
     },
     password: {
       type: String,
@@ -51,7 +51,7 @@ const userSchema = new Schema<TUser, UserModal>(
     role: {
       type: String,
       enum: Object.values(roles),
-      default: "user"
+      default: 'user',
     },
     isHumanTrue: {
       type: Boolean,
@@ -64,16 +64,16 @@ const userSchema = new Schema<TUser, UserModal>(
     },
     subscriptionId: {
       type: Schema.Types.ObjectId,
-      ref: 'Subscription', 
+      ref: 'Subscription',
     },
     isBlocked: {
       type: Boolean,
       default: false,
       required: [true, 'Blocked status is required'], // Custom error message
     },
-    isSubscription : {
-      type : Boolean,
-      default : false
+    isSubscription: {
+      type: Boolean,
+      default: false,
     },
     isEmailVerified: {
       type: Boolean,
@@ -95,13 +95,13 @@ const userSchema = new Schema<TUser, UserModal>(
       default: null,
       required: [false, 'One-time code expiry is optional'],
     },
-    subEndDate : {
-      type : Date,
-      default : null,
+    subEndDate: {
+      type: Date,
+      default: null,
     },
-    serviceCount : {
-      type : Number,
-      default : 0
+    serviceCount: {
+      type: Number,
+      default: 0,
     },
     otpCountDown: {
       type: Number,
@@ -123,7 +123,7 @@ const userSchema = new Schema<TUser, UserModal>(
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  }
+  },
 );
 
 userSchema.virtual('fullName').get(function () {
@@ -144,7 +144,7 @@ userSchema.statics.isExistUserByEmail = async function (email: string) {
 
 userSchema.statics.isMatchPassword = async function (
   password: string,
-  hashPassword: string
+  hashPassword: string,
 ): Promise<boolean> {
   return await bcrypt.compare(password, hashPassword);
 };
@@ -154,7 +154,7 @@ userSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
     this.password = await bcrypt.hash(
       this.password,
-      Number(config.bcrypt.saltRounds)
+      Number(config.bcrypt.saltRounds),
     );
   }
   next();

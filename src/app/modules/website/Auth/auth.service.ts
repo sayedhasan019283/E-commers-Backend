@@ -1,16 +1,16 @@
 import { StatusCodes } from 'http-status-codes';
-import ApiError from '../../../errors/ApiError';
+import ApiError from '../../../../errors/ApiError';
 import { User } from '../user/user.model';
-import { jwtHelper } from '../../../helpers/jwtHelper';
-import config from '../../../config';
+import { jwtHelper } from '../../../../helpers/jwtHelper';
+import config from '../../../../config';
 import bcrypt from 'bcrypt';
 import {
   IChangePassword,
   ILogin,
   IResetPassword,
   IVerifyEmail,
-} from '../../../types/auth';
-import { sendResetPasswordEmail } from '../../../helpers/emailHelper';
+} from '../../../../types/auth';
+import { sendResetPasswordEmail } from '../../../../helpers/emailHelper';
 import { Secret } from 'jsonwebtoken';
 import createOtp from './createOtp';
 
@@ -19,7 +19,7 @@ const validateUserStatus = (user: any) => {
   if (user.isDeleted) {
     throw new ApiError(
       StatusCodes.BAD_REQUEST,
-      'Your account has been deleted.'
+      'Your account has been deleted.',
     );
   }
   if (user.isBlocked) {
@@ -28,7 +28,7 @@ const validateUserStatus = (user: any) => {
 };
 
 const loginIntoDB = async (payload: ILogin) => {
-  console.log(payload)
+  console.log(payload);
   const user = await User.findOne({
     email: payload.email,
     // isEmailVerified: true,
@@ -41,7 +41,7 @@ const loginIntoDB = async (payload: ILogin) => {
   if (!isPasswordValid) {
     throw new ApiError(
       StatusCodes.BAD_REQUEST,
-      'The password you entered is incorrect. Please check and try again.'
+      'The password you entered is incorrect. Please check and try again.',
     );
   }
   if (!user) {
@@ -54,17 +54,17 @@ const loginIntoDB = async (payload: ILogin) => {
     email: user.email,
     role: user.role,
   };
-  console.log( "accessTokenPayload------>>>>",accessTokenPayload)
+  console.log('accessTokenPayload------>>>>', accessTokenPayload);
 
   const accessToken = jwtHelper.createToken(
     accessTokenPayload,
     config.jwt.accessSecret as Secret,
-    config.jwt.accessExpirationTime
+    config.jwt.accessExpirationTime,
   );
   const refreshToken = jwtHelper.createToken(
     accessTokenPayload,
     config.jwt.accessSecret as Secret,
-    config.jwt.refreshExpirationTime
+    config.jwt.refreshExpirationTime,
   );
   return {
     user: userWithoutPassword,
@@ -95,7 +95,7 @@ const forgotPassword = async (email: string) => {
 };
 
 const resendOTP = async (email: string) => {
-  const user = await User.findOne({ email});
+  const user = await User.findOne({ email });
 
   if (!user) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'User not found.');
@@ -121,20 +121,20 @@ const verifyEmail = async (payload: IVerifyEmail) => {
   if (!user) {
     throw new ApiError(
       StatusCodes.NOT_FOUND,
-      'No account found with this email address. Please check and try again.'
+      'No account found with this email address. Please check and try again.',
     );
   }
 
   if (user.oneTimeCode !== String(oneTimeCode) || !user.oneTimeCodeExpire) {
     throw new ApiError(
       StatusCodes.BAD_REQUEST,
-      'The OTP provided is invalid. Please check and try again.'
+      'The OTP provided is invalid. Please check and try again.',
     );
   }
   if (new Date() > new Date(user.oneTimeCodeExpire)) {
     throw new ApiError(
       StatusCodes.BAD_REQUEST,
-      'The OTP has expired. Please request a new one.'
+      'The OTP has expired. Please request a new one.',
     );
   }
   if (user.isEmailVerified && !user.isResetPassword) {
@@ -167,12 +167,12 @@ const verifyEmail = async (payload: IVerifyEmail) => {
   const accessToken = jwtHelper.createToken(
     accessTokenPayload,
     config.jwt.accessSecret as Secret,
-    config.jwt.accessExpirationTime
+    config.jwt.accessExpirationTime,
   );
   const refreshToken = jwtHelper.createToken(
     accessTokenPayload,
     config.jwt.accessSecret as Secret,
-    config.jwt.refreshExpirationTime
+    config.jwt.refreshExpirationTime,
   );
   return {
     tokens: {
@@ -183,7 +183,7 @@ const verifyEmail = async (payload: IVerifyEmail) => {
 };
 
 const resetPassword = async (payload: IResetPassword) => {
-  const {email, confirmPassword, newPassword } = payload;
+  const { email, confirmPassword, newPassword } = payload;
   if (newPassword !== confirmPassword) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Passwords do not match.');
   }
@@ -209,17 +209,17 @@ const changePassword = async (userId: string, payload: IChangePassword) => {
   if (payload.currentPassword === payload.newPassword) {
     throw new ApiError(
       StatusCodes.BAD_REQUEST,
-      'Your new password cannot be the same as the current password. Please choose a different password.'
+      'Your new password cannot be the same as the current password. Please choose a different password.',
     );
   }
   const isCurrentPasswordValid = await bcrypt.compare(
     payload.currentPassword,
-    user.password
+    user.password,
   );
   if (!isCurrentPasswordValid) {
     throw new ApiError(
       StatusCodes.BAD_REQUEST,
-      'Your current password is incorrect.'
+      'Your current password is incorrect.',
     );
   }
   user.password = payload.newPassword;
@@ -232,7 +232,7 @@ const refreshToken = async (refreshToken: string) => {
   console.log(refreshToken);
   const decoded = jwtHelper.verifyToken(
     refreshToken,
-    config.jwt.accessSecret as Secret
+    config.jwt.accessSecret as Secret,
   );
 
   const user = await User.findById(decoded.id).select('+password');
@@ -250,7 +250,7 @@ const refreshToken = async (refreshToken: string) => {
   const accessToken = jwtHelper.createToken(
     accessTokenPayload,
     config.jwt.accessSecret as Secret,
-    config.jwt.accessExpirationTime
+    config.jwt.accessExpirationTime,
   );
 
   return {
@@ -265,5 +265,4 @@ export const AuthService = {
   resetPassword,
   changePassword,
   refreshToken,
-}; 
-  
+};

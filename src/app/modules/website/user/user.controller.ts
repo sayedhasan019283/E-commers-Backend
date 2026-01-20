@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import catchAsync from '../../../shared/catchAsync';
-import sendResponse from '../../../shared/sendResponse';
+import catchAsync from '../../../../shared/catchAsync';
+import sendResponse from '../../../../shared/sendResponse';
 import { UserService } from './user.service';
 import { User } from './user.model';
-import ApiError from '../../../errors/ApiError';
-import pick from '../../../shared/pick';
+import ApiError from '../../../../errors/ApiError';
+import pick from '../../../../shared/pick';
 
 const createUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -43,7 +43,7 @@ const createUser = catchAsync(
         'OTP sent to your email, please verify your email within the next 3 minutes.',
       data: result,
     });
-  }
+  },
 );
 
 const getAllUsers = catchAsync(async (req: Request, res: Response) => {
@@ -142,9 +142,8 @@ const deleteMyProfile = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-
-const getSingleUserById = catchAsync(async (req , res) => {
-  const {id} = req.params;
+const getSingleUserById = catchAsync(async (req, res) => {
+  const { id } = req.params;
   const result = await UserService.getSingleUserFromDB(id);
   if (!result) {
     return sendResponse(res, {
@@ -157,7 +156,7 @@ const getSingleUserById = catchAsync(async (req , res) => {
     message: 'User get successfully.',
     data: result,
   });
-})
+});
 
 export const UserController = {
   createUser,
@@ -169,5 +168,5 @@ export const UserController = {
   fillUpUserDetails,
   deleteMyProfile,
   changeUserStatus,
-  getSingleUserById
+  getSingleUserById,
 };

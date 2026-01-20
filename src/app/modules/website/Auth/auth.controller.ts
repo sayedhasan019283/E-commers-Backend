@@ -1,11 +1,11 @@
 import { StatusCodes } from 'http-status-codes';
-import catchAsync from '../../../shared/catchAsync';
-import sendResponse from '../../../shared/sendResponse';
+import catchAsync from '../../../../shared/catchAsync';
+import sendResponse from '../../../../shared/sendResponse';
 import { AuthService } from './auth.service';
 
 //login
 const loginIntoDB = catchAsync(async (req, res, next) => {
-  console.log("Login Route" , req.body)
+  console.log('Login Route', req.body);
   const result = await AuthService.loginIntoDB(req.body);
   sendResponse(res, {
     code: StatusCodes.OK,
@@ -36,7 +36,7 @@ const resendOTP = catchAsync(async (req, res, next) => {
       'OTP sent to your email, please verify your email within the next 3 minutes',
     data: result,
   });
-})
+});
 //verify email
 const verifyEmail = catchAsync(async (req, res, next) => {
   const verifyData = req.body;
@@ -51,7 +51,7 @@ const verifyEmail = catchAsync(async (req, res, next) => {
 //reset password
 const resetPassword = catchAsync(async (req, res, next) => {
   const resetPasswordData = req.body;
-  
+
   await AuthService.resetPassword(resetPasswordData);
   sendResponse(res, {
     code: StatusCodes.OK,
@@ -93,5 +93,5 @@ export const AuthController = {
   resetPassword,
   changePassword,
   refreshToken,
-  resendOTP
+  resendOTP,
 };

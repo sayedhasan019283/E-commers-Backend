@@ -33,7 +33,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Health check or any test route
 app.get('/test', (req: Request, res: Response) => {
-  res.status(201).json({ message: 'Welcome to Backend Template Server' });
+  res.status(201).json({ message: 'Welcome to E-commerce Backend Server' });
 });
 
 // Routes (before Swagger to prevent potential conflicts)

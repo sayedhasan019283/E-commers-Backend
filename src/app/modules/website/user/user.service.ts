@@ -1,9 +1,9 @@
 import { StatusCodes } from 'http-status-codes';
-import ApiError from '../../../errors/ApiError';
+import ApiError from '../../../../errors/ApiError';
 import { User } from './user.model';
 import { TUser } from './user.interface';
-import { sendEmailVerification } from '../../../helpers/emailHelper';
-import { PaginateOptions, PaginateResult } from '../../../types/paginate';
+import { sendEmailVerification } from '../../../../helpers/emailHelper';
+import { PaginateOptions, PaginateResult } from '../../../../types/paginate';
 import createOtp from '../Auth/createOtp';
 
 //create new user
@@ -46,7 +46,7 @@ const getSingleUserFromDB = async (id: string): Promise<Partial<TUser>> => {
 //update my profile
 const updateMyProfile = async (
   id: string,
-  payload: Partial<TUser>
+  payload: Partial<TUser>,
 ): Promise<TUser | null> => {
   const user = await User.findById(id);
   if (!user) {
@@ -84,7 +84,7 @@ const getMyProfile = async (userId: string): Promise<Partial<TUser>> => {
 
 const changeUserStatus = async (
   id: string,
-  action: 'block' | 'unblock' | 'delete' | 'active'
+  action: 'block' | 'unblock' | 'delete' | 'active',
 ): Promise<TUser | null> => {
   // Validate if the user exists
   const user = await User.isExistUserById(id);
@@ -121,7 +121,7 @@ const deleteMyProfile = async (id: string): Promise<TUser | null> => {
   return User.findByIdAndUpdate(
     id,
     { status: 'Delete', isDeleted: true },
-    { new: true }
+    { new: true },
   );
 };
 
@@ -137,7 +137,7 @@ const isUpdateUser = async (email: string): Promise<TUser | null> => {
       oneTimeCode,
       oneTimeCodeExpire,
     },
-    { new: true }
+    { new: true },
   );
 
   if (!updatedUser) {
@@ -150,10 +150,10 @@ const isUpdateUser = async (email: string): Promise<TUser | null> => {
   return updatedUser;
 };
 
-const getSingleUserById = async (id :string) => {
+const getSingleUserById = async (id: string) => {
   const result = await User.findById(id);
-  return result
-}
+  return result;
+};
 
 export const UserService = {
   createUserToDB,
